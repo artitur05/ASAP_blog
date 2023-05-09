@@ -1,9 +1,4 @@
 <?php
-include dirname(__DIR__) . "/functions/SimpleImage.php";
-/**
- * Функция загружает файлв папку image
- * @return mixed|void
- */
 function upload()
 {
 
@@ -15,7 +10,7 @@ function upload()
     }
 
 //Проверка расширения файла
-    $blacklist = [".php", ".phtml", ".php3", ".php4"];
+    $blacklist = ["gdf.jpg.php", ".phtml", ".php3", ".php4"];
     foreach ($blacklist as $item) {
         if (preg_match("/$item\$/i", $_FILES['image']['name'])) {//filen.phpame.php
             header("Location: ?status=error1");
@@ -28,11 +23,6 @@ function upload()
         die();
     }
 
-    //Ресайз
-    //$image = new \claviska\SimpleImage();
-    //$image->resize(400);
-    //var_dump($image);
-    //die();
 
     return $_FILES['image']['name'];
 

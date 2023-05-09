@@ -6,6 +6,8 @@ if (isset($_POST['login'])) {
 
     $login = strip_tags($_POST['login']);
     $pass = strip_tags($_POST['pass']);
+    var_dump($login);
+    var_dump($pass);
 
     if (auth($login, $pass)) {
         //setcookie('login', 'admin', time() + 36000, '/');
@@ -16,16 +18,13 @@ if (isset($_POST['login'])) {
         die("Не правильный логин пароль");
     }
 }
-
-function isAdmin() {};
-
 function auth($login, $pass)
 {
     $result = getConnection()->prepare("SELECT * FROM users WHERE login = :login");
     $result->execute(['login' => $login]);
     $user = $result->fetch();
+    var_dump($user);
     if ($user === false) return false;
-//сохранить случайный хеш в юзера и в куку
     if (password_verify($pass, $user['pass'])) return true;
 }
 
@@ -42,4 +41,3 @@ if (isset($_GET['logout'])) {
     header('Location: /');
     die();
 }
-

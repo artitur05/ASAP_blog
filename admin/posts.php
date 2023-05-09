@@ -1,5 +1,5 @@
 <?php
-include dirname(__DIR__) . "/functions/db.php";
+include_once dirname(__DIR__) . "/functions/db.php";
 include dirname(__DIR__) . "/functions/upload.php";
 include dirname(__DIR__) . '/functions/auth.php';
 if ($userName != 'admin') Die("Ты не пройдешь!");
@@ -12,8 +12,7 @@ $messages = [
     'error' => 'Ошибка, нет такого поста',
     'error1' => 'Загрузка php-файлов запрещена!',
     'error2' => 'Размер файла не больше 5 мб',
-    'error3' => 'Ошибка загрузки файла',
-
+    'error3' => 'Ошибка загрузки файла'
 ];
 $action = $_GET['action'] ?? '';
 
@@ -24,7 +23,7 @@ $raw = [
     'title' => '',
     'text' => '',
     'image' => '',
-    'category_id' => '',
+    'category_id' => ''
 ];
 $formAction = "add";
 $formText = "Добавить";
@@ -120,8 +119,6 @@ $categories = $resultCategories->fetchAll();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <?php include dirname(__DIR__) . "/widgets/admin.php" ?>
@@ -148,7 +145,7 @@ $categories = $resultCategories->fetchAll();
     <textarea name="text" cols="30" rows="2"><?= $raw['text'] ?></textarea><br>
 
     <?php if (!is_null($raw['image'])): ?>
-        <img src="/images/<?= $raw['image'] ?>" alt="картинка" width="200"><br>
+        <img src="/images/<?= $raw['image'] ?>" alt="" width="200"><br>
         Удалить картинку?
         <input type="checkbox" name="isDeleteImage" value="yes"><br>
     <?php endif; ?>
@@ -160,8 +157,8 @@ $categories = $resultCategories->fetchAll();
 </form><br>
 <?php foreach ($posts as $post): ?>
     <li><a href="/post.php?id=<?= $post['id'] ?>"><?= $post['title'] ?></a>
-        <a href="?id=<?= $post['id'] ?>&action=edit"><i class="fa fa-edit"></i></a>
-        <a href="?id=<?= $post['id'] ?>&action=delete"><i class="fa fa-trash"></i></a>
+        <a href="?id=<?= $post['id'] ?>&action=edit"><i>Редактировать</i></a>
+        <a href="?id=<?= $post['id'] ?>&action=delete"><i>Удалить</i></a>
     </li>
 <?php endforeach; ?>
 </body>

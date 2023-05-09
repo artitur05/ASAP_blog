@@ -1,6 +1,6 @@
 <?php
 include dirname(__DIR__) . '/functions/auth.php';
-include dirname(__DIR__) . "/functions/db.php";
+include_once dirname(__DIR__) . "/functions/db.php";
 if ($userName != 'admin') Die("Ты не пройдешь!");
 
 $messages = [
@@ -12,11 +12,7 @@ $messages = [
 ];
 
 $action = $_GET['action'] ?? '';
-/*if (isset($_GET['action'])) {
-    $action = $_GET['action'];
-} else {
-    $action = '';
-}*/
+
 
 $message = !empty($_GET['status']) ? $messages[$_GET['status']] ?? '' : '';
 
@@ -28,66 +24,65 @@ $formAction = "add";
 $formText = "Добавить";
 
 
-switch ($action) {
-    case "add":
-        $name = strip_tags($_POST['name']);
-        $result = getConnection()->prepare("INSERT INTO categories (name) VALUES (?)");
-        $result->execute([$name]);
-        header("Location: ?status=add");
-        die();
 
-    case "delete":
-        $id = (int)$_GET['id'];
-        $result = getConnection()->prepare("DELETE FROM categories WHERE id = :id");
-        $result->execute(['id' => $id]);
-        header("Location: ?status=del");
-        die();
 
-    case "edit":
-        $id = (int)$_GET['id'];
-        $result = getConnection()->prepare("SELECT * FROM categories WHERE id = :id");
-        $result->execute(['id' => $id]);
-        $raw = $result->fetch();
-        if (!$raw) {
-            header("Location: ?status=error");
-            die();
-        }
 
-        $formAction = "save";
-        $formText = "Изменить";
-        break;
-    case "save":
-        $name = strip_tags($_POST['name']);
-        $id = (int)$_POST['id'];
+//CRUD edit
+if (!empty($_GET['action']) and $_GET['action'] == 'edit') {
+    $id = (int)$_GET['id'];
+    $result = getConnection()->prepare("SELECT * FROM categories WHERE id = :id");
+    $result->execute(['id'=>$id]);
+    $raw = $result->fetch();
+    $action = "save";
+    $formText = "Изменить";
+}
 
-        $result = getConnection()->prepare("UPDATE categories SET name = ? WHERE id = ?");
-        $result->execute([$name, $id]);
+if (!empty($_GET['action']) and $_GET['action'] == 'save') {
+    $title = strip_tags($_POST['title']);
+    $id = (int)$_POST['id'];
 
-        header("Location: ?status=edit");
-        die();
-    case "":
-        break;
-    default:
-        header("Location: ?status=error");
-        die();
+    $result = getConnection()->prepare('UPDATE categories SET name = ? WHERE id = ?');
+    $result->execute([$title, $id]);
+
+    header("Location: /admin?status=edit");
+    die();
+}
+//CRUD create
+if (!empty($_POST) and $_GET['action'] == 'add')
+{
+    $title = strip_tags($_POST['title']);
+
+
+    $result = getConnection()->prepare('INSERT INTO categories (name) VALUES (?)');
+    $result->execute([$title]);
+
+    header("Location: /admin?status=add");
+    die();
 }
 
 
-$resultCategories = getConnection()->prepare("SELECT * FROM categories ORDER BY id DESC ");
-$resultCategories->execute();
-$categories = $resultCategories->fetchAll();
+//CRUD delete
+if(!empty($_GET['action']) and $_GET['action']== 'delete')
+{
+    $id = (int)$_GET['id'];
+    $result = getConnection()->prepare("DELETE FROM categories WHERE id = :id");
+    $result->execute(['id'=>$id]);
 
+    header("Location: /admin?status=del");
+    die();
 
+}
+//  CRUD read
+$result = getConnection()->prepare('SELECT id,name FROM categories ORDER BY id DESC');
+$result->execute();
+$categories = $result->fetchAll();
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
 <body>
 <?php include dirname(__DIR__) . "/widgets/admin.php" ?>
 <h2>Crud категории</h2>
@@ -101,8 +96,8 @@ $categories = $resultCategories->fetchAll();
 <br>
 <?php foreach($categories as $category): ?>
     <li><a href="/posts.php?id=<?=$category['id']?>"><?=$category['name']?></a>
-        <a href="?id=<?= $category['id'] ?>&action=edit"><i class="fa fa-edit"></i></a>
-        <a href="?id=<?= $category['id'] ?>&action=delete"><i class="fa fa-trash"></i></a>
+        <a href="?id=<?= $category['id'] ?>&action=edit"><i>Редактировать</i></a>
+        <a href="?id=<?= $category['id'] ?>&action=delete"><i>Удалить</i></a>
     </li>
 <?php endforeach;?>
 </body>

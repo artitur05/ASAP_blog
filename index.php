@@ -1,6 +1,7 @@
 <?php
 include __DIR__ . '/functions/auth.php';
 $title = "Главная блог";
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -14,3 +15,5 @@ $title = "Главная блог";
     Добро пожаловать в наш блог!
 </body>
 </html>
+
+
