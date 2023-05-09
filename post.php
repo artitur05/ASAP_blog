@@ -5,7 +5,8 @@ $title = "Пост";
 
 $post_id = !empty($_GET['id']) ? (int)$_GET['id'] : 0;
 
-$result = getConnection()->prepare("SELECT posts.title,posts.text,categories.name, posts.image FROM posts INNER JOIN  categories ON posts.category_id = categories.id WHERE posts.id = :id");
+$result = getConnection()->prepare("SELECT posts.title,posts.text,categories.name, posts.image FROM posts 
+    INNER JOIN  categories ON posts.category_id = categories.id WHERE posts.id = :id");
 
 $result->execute(['id' => $post_id]);
 

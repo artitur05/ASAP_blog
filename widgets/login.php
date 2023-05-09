@@ -1,5 +1,5 @@
 <?php if ($auth): ?>
-    Привет <?= $userName ?>! <a href="/?logout">Выход</a>
+    Привет <?=$userName?>! <a href="/?logout">Выход</a>
 <?php else: ?>
     <form method="post">
         <input type="text" name="login" placeholder="Введите логин">

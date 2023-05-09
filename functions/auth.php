@@ -10,7 +10,6 @@ if (isset($_POST['login'])) {
     var_dump($pass);
 
     if (auth($login, $pass)) {
-        //setcookie('login', 'admin', time() + 36000, '/');
         $_SESSION['login'] = $login;
         header('Location: /');
         die();
